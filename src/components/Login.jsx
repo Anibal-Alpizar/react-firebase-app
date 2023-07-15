@@ -11,7 +11,7 @@ export function Login() {
 
   const [error, seterror] = useState("");
 
-  const { login, loginWithGoogle } = useAuth();
+  const { login, loginWithGoogle, resetPassword } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = ({ target: { name, value } }) =>
@@ -33,6 +33,16 @@ export function Login() {
     try {
       await loginWithGoogle();
       navigate("/");
+    } catch (err) {
+      seterror(err.message);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!user.email) return seterror("Please enter your email address.");
+    try {
+      await resetPassword(user.email);
+      seterror("Check your inbox for further instructions.");
     } catch (err) {
       seterror(err.message);
     }
@@ -77,12 +87,22 @@ export function Login() {
             placeholder="********"
           />
         </div>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-black text-sm py-2 px-4 rounded focus:outline-none
-        focus:shadow-outline w-full"
-        >
-          Login
-        </button>
+
+        <div className="flex items-center justify-between">
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-black text-sm py-2 px-4 rounded focus:outline-none
+          focus:shadow-outline"
+          >
+            Login
+          </button>
+          <a
+            className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
+            href="#"
+            onClick={handleResetPassword}
+          >
+            Forgot your password?
+          </a>
+        </div>
       </form>
       <p className="my-4 text-sm flex justify-between px-3">
         Don't have an account? <Link to="/register">Register</Link>
